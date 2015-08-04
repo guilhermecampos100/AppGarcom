@@ -237,7 +237,7 @@ if (codigoacao == 3) { acao = "fecharpesquisa"; }
 	var segundos = new Date().getTime() / 1000;
     $.ajax({
         type: "get",
-        url: "processaacaojson.asp?acao="+ acao + "&codigo="+codigo + "&segundos="+ segundos,
+        url: "http://chamagar.com/dashboard/painel/processaacaojson.asp?acao="+ acao + "&codigo="+codigo + "&segundos="+ segundos,
         contentType: "application/json; charset=utf-8",
         success: cancelapedidoOnSuccess, // this function plots the new data
         error: cancelapedidoOnError
