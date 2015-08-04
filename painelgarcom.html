@@ -63,6 +63,11 @@ function OnSuccess(response) {
 	var txtcabecalhomesas = "";
 	var nivelvibracao = "0";
 	
+	if (nome_garcom == '') {
+		location.href = "index.html?mensagem=" + token + " token desconhecido";
+		return false;
+	}
+	
 
 	
     txtgarcom += "<a class='navbar-brand' href='login.asp'><table><tr><td><img src='/fotos/" + foto_garcom + "' width='25px' ></td><td> &nbsp; &nbsp; " +   nome_garcom + "</td></tr></table></a>";
@@ -236,7 +241,7 @@ if (codigoacao == 3) { acao = "fecharpesquisa"; }
 	var segundos = new Date().getTime() / 1000;
     $.ajax({
         type: "get",
-        url: "processaacaojson.asp?acao="+ acao + "&codigo="+codigo + "&segundos="+ segundos,
+        url: "http://chamagar.com/dashboard/painel/processaacaojson.asp?acao="+ acao + "&codigo="+codigo + "&segundos="+ segundos,
         contentType: "application/json; charset=utf-8",
         success: cancelapedidoOnSuccess, // this function plots the new data
         error: cancelapedidoOnError
@@ -326,10 +331,10 @@ alert("erro");
                     <ul class="nav" id="side-menu">
                        
                         <li>
-                            <a href="painel.asp?horario="><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                            <a href=#><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
                                 <li>
-                                    <a href="login.asp">Login Page</a>
+                                    <a href="index.html">Login Page</a>
                                 </li>
 
                     </ul>

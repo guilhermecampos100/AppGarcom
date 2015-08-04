@@ -1,15 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<head>
 
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-<script type="text/javascript">
+    <title>ChamaGarçom - Login Garçom</title>
 
-var counter = 2;
-//var token = getUrlParameter('token');
-var token = '99999';
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- MetisMenu CSS -->
+    <link href="css/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	
+
+
+
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                <div class="login-panel panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">insira o token de garçom</h3>
+                    </div>
+                    <div class="panel-body">
+                        <form method="get" action="painelgarcom.html">
+                            <fieldset>
+                                <div class="form-group">
+									<div id="txtmensagem" style="color:red"></div><br>
+                                    <input class="form-control" placeholder="token" name="token" type="text" autofocus>
+                                </div>
+                                <button class="btn btn-lg btn-success btn-block">Login</a>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+	
+<script>
+var mensagem = getUrlParameter('mensagem');
 
 function getUrlParameter(sParam)
 {
@@ -23,365 +69,20 @@ function getUrlParameter(sParam)
             return sParameterName[1];
         }
     }
-}   
+} 
 
-
-$(function() {
-    prepare();
-    update();
-});
-
-function update() {
-    $("#timer").html("Refreshing in " + counter + " seconds...");
-    counter--;
-
-    if (counter == 0) {
-        counter = 10;
-        prepare();
-    }
-
-    setTimeout(update, 1000);
+function urldecode(str) {
+   return decodeURIComponent((str+'').replace(/\+/g, '%20'));
 }
 
-function prepare() {
-	var segundos = new Date().getTime() / 1000;
-    $.ajax({
-        type: "post",
-        url: "http://chamagar.com/dashboard/painel/paineljson.asp?token=" +  token + "&segundos=" + segundos,
-        contentType: "application/json; charset=utf-8",
-        success: OnSuccess, // this function plots the new data
-        error: OnError
-    });
+if (mensagem != undefined) {
+	document.getElementById("txtmensagem").innerHTML = urldecode(mensagem);
 }
 
-function OnSuccess(response) {
-    var arr = JSON.parse(response);
-    var i;
-    var txtmesas = "";
-	var txtgarcom = ""
-	var foto_garcom = arr.garcom[0].foto_garcom;
-	var nome_garcom = arr.garcom[0].nome_garcom;
-	var txtcabecalhomesas = "";
-	var nivelvibracao = "0";
-	
 
-	
-    txtgarcom += "<a class='navbar-brand' href='login.asp'><table><tr><td><img src='/fotos/" + foto_garcom + "' width='25px' ></td><td> &nbsp; &nbsp; " +   nome_garcom + "</td></tr></table></a>";
-	document.getElementById("txtgarcom").innerHTML = txtgarcom;
-	
 
-	if (arr.mesas.length > 0) {
-		txtcabecalhomesas += "<br><div class='panel panel-default'><div class='panel-heading'><i class='fa fa-bell fa-fw'></i> Mesas Chamando</div></div>";
-	}
-	document.getElementById("txtcabecalhomesas").innerHTML = txtcabecalhomesas;	
-
-	
-  for(i = 0; i < arr.mesas.length; i++) {
-  
-	stronline = "<span class='pull-right'><i class='fa fa-mobile'></i></span>";
-	if (arr.mesas[i].online == "0") {
-		stronline = "<span class='pull-right'><font color='red'><i class='fa fa-warning'></i></font></span>";
-	}
-	
-	if (nivelvibracao == 0) {
-		nivelvibracao = "100";
-	}
-	
-	if (arr.mesas[i].corclasse == 'panel-red') {
-			nivelvibracao = "1000";
-	}
-	if (arr.mesas[i].corclasse == 'panel-yellow' && nivelvibracao < 500) {
-			nivelvibracao = "500";
-	}	
-		
-	txtmesas += "<div class='col-lg-3 col-md-6'>";
-	txtmesas += "            <div class='panel " + arr.mesas[i].corclasse + "'>";
-	txtmesas += "                <div class='panel-heading'>";
-	txtmesas += "                    <div class='row'>";
-	txtmesas += "                        <div class='col-xs-4'>";
-	txtmesas += "                            <center>";
-	txtmesas += "                            <center>";
-	txtmesas += "                            <center>";
-	txtmesas += "                            <center>";
-	txtmesas += "                            <center>";
-	txtmesas += "    <img src='/fotos/"+ arr.mesas[i].foto_garcom + "' width='40px'>";
-	txtmesas += "                            <font style='font-size:11px;'>" + arr.mesas[i].nome_garcom + "</font>";
-	txtmesas += "                            </center>";
-	txtmesas += "                        </div>";
-	txtmesas += "                        <div class='col-xs-8 text-right'>";
-	txtmesas += "                            <div class='huge'>" + arr.mesas[i].mesa + "</div>";
-	txtmesas += "                            <div>" + arr.mesas[i].tempo + "</div>";
-	txtmesas += "                        </div>";
-	txtmesas += "                    </div>";
-	txtmesas += "                </div>";
-	txtmesas += "                <a href='#' onclick='processaacao(1,\"" + arr.mesas[i].codigomesa + "\");'>";
-	txtmesas += "                    <div class='panel-footer'>";
-	txtmesas += "                        <span class='pull-left'>Cancelar</span>";
-	txtmesas += "                        " + stronline;
-	txtmesas += "                        <div class='clearfix'></div>";
-	txtmesas += "                    </div>";
-	txtmesas += "                </a>";
-	txtmesas += "            </div>";
-	txtmesas += "        </div>";
-	}
-	document.getElementById("txtmesas").innerHTML = txtmesas;
-
-	
-	var txtpedidos = "";
-	var txtpedidos2 = "";
-	var txtcabecalhopedidos = "";
-	var txtlink = "";
-	var txtaguardando = ""
-	
-	if (arr.pedidos.length > 0) {
-		txtcabecalhopedidos += "<br><div class='panel panel-default'><div class='panel-heading'><i class='fa fa-bell fa-fw'></i> Pedidos Pendentes</div></div>";
-	}
-	
-	if (txtcabecalhomesas == "" && txtcabecalhopedidos == "") {
-		txtcabecalhopedidos += "<br><div class='panel panel-default'><div class='panel-heading'><i class='fa fa-mobile fa-fw'></i> Sistema Online - Nenhum chamado no momento</div></div>";
-	}
-	
-	
-	document.getElementById("txtcabecalhopedidos").innerHTML = txtcabecalhopedidos;	
-	
-	for(i = 0; i < arr.pedidos.length; i++) {
-		stronline = "<span class='pull-right'><i class='fa fa-mobile'></i></span>";
-		if (arr.pedidos[i].online == "0") {
-			stronline = "<span class='pull-right'><font color='red'><i class='fa fa-warning'></i></font></span>";
-		}
-		
-		
-		if (nivelvibracao == 0) {
-			nivelvibracao = "100";
-	}
-		if (arr.pedidos[i].corclasse == 'panel-red') {
-			nivelvibracao = "1000";
-		}
-		if (arr.pedidos[i].corclasse == 'panel-yellow' && nivelvibracao < 500) {
-			nivelvibracao = "500";
-		}
-		
-	    txtpedidos +="<a href='#' onclick='processaacao(2," + arr.pedidos[i].codigopedido + ");' class='list-group-item'>";
-        txtpedidos +="<i class='fa " + arr.pedidos[i].classeitem + " fa-fw'></i> &nbsp; " + arr.pedidos[i].quantidade + " </b> &nbsp; " + arr.pedidos[i].itemcardapio; 
-        txtpedidos +=" &nbsp; <em>" + arr.pedidos[i].tempo + " </em> &nbsp; <button type='button' class='btn btn-primary btn-xs'>Mesa " + arr.pedidos[i].mesa + "</button> Evaristo &nbsp; <button type='button' class='btn " + arr.pedidos[i].classebotao + " btn-xs'><i class='fa fa-check fa-fw'></i>pendente</button> " + stronline + "</a> ";
-		
-		if (arr.pedidos[i].status == '2') {
-			txtlink = "colocar em andamento";
-			txtaguardando = "";
-			}
-		else
-			{
-			txtlink = "colocar entregue";
-			txtaguardando = "<button class='btn btn-default btn-xs'><font class='fonte10'>Em Andamento</font></button>";
-			}
-
-		
-		
-	txtpedidos2 += "<div class='col-lg-3 col-md-6'>";
-	txtpedidos2 += "            <div class='panel " + arr.pedidos[i].corclasse + "'>";
-	txtpedidos2 += "                <div class='panel-footer'>";
-	txtpedidos2 += "                    <div class='row'>";
-	txtpedidos2 += "                        <div class='col-xs-3'>";
-	txtpedidos2 += "                            <center>";
-	txtpedidos2 += "                            <center>";
-	txtpedidos2 += "                            <center>";
-	txtpedidos2 += "                            <center>";
-	txtpedidos2 += "                            <center>";
-	txtpedidos2 += "    <img src='/fotos/"+ arr.pedidos[i].foto_garcom + "' width='40px'>";
-	txtpedidos2 += "                            <font style='font-size:11px;'>" + arr.pedidos[i].nome_garcom + "</font>";
-	txtpedidos2 += "                            </center>";
-	txtpedidos2 += "                        </div>";
-	txtpedidos2 += "                        <div class='col-xs-6 text-left'>" + arr.pedidos[i].quantidade + " " +  arr.pedidos[i].itemcardapio;
-	txtpedidos2 += "                        " + txtaguardando + "</div>";
-	txtpedidos2 += "                        <div class='col-xs-3 text-right'>";
-	txtpedidos2 += "                            <div class='huge'>" + arr.pedidos[i].mesa + "</div>";
-	txtpedidos2 += "                            <div>" + arr.pedidos[i].tempo + "</div>";
-	txtpedidos2 += "                        </div>";
-	txtpedidos2 += "                    </div>";
-	txtpedidos2 += "                </div>";
-	txtpedidos2 += "                <a href='#' onclick='processaacao(2,\"" + arr.pedidos[i].codigopedido + "\");'>";
-	txtpedidos2 += "                    <div class='panel-footer'>";
-	txtpedidos2 += "                        <span class='pull-left'>" + txtlink + "</span>";
-	txtpedidos2 += "                        " + stronline;
-	txtpedidos2 += "                        <div class='clearfix'></div>";
-	txtpedidos2 += "                    </div>";
-	txtpedidos2 += "                </a>";
-	txtpedidos2 += "            </div>";
-	txtpedidos2 += "        </div>";
-		
-	}
-	
-	document.getElementById("txtpedidos2").innerHTML = txtpedidos2;
-
-	if (nivelvibracao > 0) {
-		navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
-		if (navigator.vibrate) {
-			navigator.vibrate([50,100,nivelvibracao]);
-		}
-	}
-	
-	
-}
-
-	
-function OnError() {
-	alert("em teste, aguarde e tente novamente...");
-	}
-
-function processaacao(codigoacao,codigo) {
-var acao = "";
-if (codigoacao == 1) { acao = "cancelarmesa"; }
-if (codigoacao == 2) { acao = "receberpedido"; }
-if (codigoacao == 3) { acao = "fecharpesquisa"; }
-
-	var segundos = new Date().getTime() / 1000;
-    $.ajax({
-        type: "get",
-        url: "http://chamagar.com/dashboard/painel/processaacaojson.asp?acao="+ acao + "&codigo="+codigo + "&segundos="+ segundos,
-        contentType: "application/json; charset=utf-8",
-        success: cancelapedidoOnSuccess, // this function plots the new data
-        error: cancelapedidoOnError
-    });
-}
-
-function  cancelapedidoOnSuccess(response) {
-prepare();
-}
-
-function cancelapedidoOnError() {
-alert("erro");
-}
-
-	
 </script>
 
-
-
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>BarCzar - Controle do Garçom</title>
-
-    <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- MetisMenu CSS -->
-    <link href="metisMenu.min.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link href="css/sb-admin-2.css" rel="stylesheet">
-
-    <!-- Custom Fonts -->
-    <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-<style>
-	.roundedImage {
-    background: url(fotos/fotogarcon.jpg);
-    background-repeat: no-repeat;
-    background-size: cover;
-
-    overflow:hidden;
-    -webkit-border-radius:30px;
-    -moz-border-radius:30px;
-    border-radius:30px;
-    width:54px;
-    height:54px;
-
-}
-</style>
-</head>
-
-<body>
-
-    <div id="wrapper">
-
-        <!-- Navigation -->
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-				<div id="txtgarcom"></div>
-            </div>
-            <!-- /.navbar-header -->
-
-
-            <!-- /.navbar-top-links -->
-
-            <div class="navbar-default sidebar" role="navigation">
-                <div class="sidebar-nav navbar-collapse">
-                    <ul class="nav" id="side-menu">
-                       
-                        <li>
-                            <a href="painel.asp?horario="><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-                        </li>
-                                <li>
-                                    <a href="login.asp">Login Page</a>
-                                </li>
-
-                    </ul>
-					
-					
-					
-                </div>
-                <!-- /.sidebar-collapse -->
-
-            <!-- /.navbar-static-side -->
-        </nav>
-
-
-        <!-- Page Content -->
-        <div id="page-wrapper">
-		
-				<!-- /painel Pedidos Enviados -->
-			    <div id="txtcabecalhopedidos"></div>
-
-		<div class="row"> 
-				<div id="txtpedidos2"> atualizando...</div>
-		</div>
-			
-			
-				
-				<!-- /painel Pedidos Enviados -->
-				<br>
-				 
-				<div id="txtcabecalhomesas"></div>
-				<!-- /.panel-heading -->
-
-			<!-- Mesa - Tempo Azul -->
-			<div class="row">
-				<div id="txtmesas"> atualizando...</div>
-			</div>
-			
-			
-            <!-- /.row -->
-			
-				<div class="row">
-				
-	
-            <!-- /.row -->
-
-            </div>
-            <!-- /.container-fluid -->
-        </div>
-        <!-- /#page-wrapper -->
-
-    </div>
-    <!-- /#wrapper -->
 
     <!-- jQuery -->
     <script src="js/jquery.min.js"></script>
